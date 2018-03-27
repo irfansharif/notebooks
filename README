@@ -1,0 +1,5 @@
+    $ docker pull irfansharif/notebooks
+    $ # Alternatively:
+    $ #   git clone git@github.com:irfansharif/notebooks.git
+    $ #   docker build -t irfansharif/notebooks notebooks
+    $ docker run -it -p 8888:8888 irfansharif/notebooks
