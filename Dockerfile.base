@@ -1,11 +1,8 @@
 FROM continuumio/anaconda3
 LABEL maintainer = "Irfan Sharif <irfanmahmoudsharif@gmail.com>"
 
-# We package in all the notebooks into the image itself.
-#
-# NB: This image can be mounted off a local directory, doing so persists
+# NB: This image is to be mounted off a local directory, doing so will persist
 # the changes made to /notebooks via Jupyter on to the host filesystem.
-COPY src /notebooks
 
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062

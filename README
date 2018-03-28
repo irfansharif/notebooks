@@ -1,25 +1,53 @@
-    $ git clone git@github.com:irfansharif/notebooks.git
-    $ docker build -t irfansharif/notebooks notebooks
+There are two public images contained here:
+
+    docker.io/irfansharif/notebooks
+    docker.io/irfansharif/notebooks-base
+
+The base image is just that, a base image. It doesn't contain the experiments
+themselves but packages in the set of dependencies (via anaconda3) and build
+environment needed to run various Jupyter notebooks. It can be used run mounted
+off a local directory whereby the changes made via the running Jupyter server
+are persisted to the specified directory.
+
+  Usage:
+    MNTPOINT is any fully specified path on the host's filesystem.
+
+    $ docker run -it \
+      -p 8888:8888 \
+      --mount type=bind,source="$MNTPOINT",target=/notebooks \
+      irfansharif/notebooks-base
+
+irfansharif/notebooks comes packaged in with the notebooks found under src/
+within this repository. This can be ran down locally as follows:
+
     $ docker run -it \
         -p 8888:8888 \
-        --mount type=bind,source="$PWD"/notebooks/src,target=/notebooks \
         irfansharif/notebooks
+
+Alternatively if a mount point is specified, similar to the base image, any
+changes made via Jupyter are persisted locally. (The packaged notebooks, and
+the changes made to them, are also persisted.)
+
+    Usage:
+    MNTPOINT is any fully specified path on the host's filesystem.
+
+    $ docker run -it \
+      -p 8888:8888 \
+      --mount type=bind,source="$MNTPOINT",target=/notebooks \
+      irfansharif/notebooks-base
+
+CONTRIBUTING:
+
+    $ git clone git@github.com:irfansharif/notebooks.git
+    $ # To build the base image:
+    $ docker build \
+        -t irfansharif/notebooks-base \
+        -f notebooks/Dockerfile.base \
+        notebooks
+    $ # To build the packaged notebooks image:
+    $ docker build \
+        -t irfansharif/notebooks \
+        -f notebooks/Dockerfile \
+        notebooks
 
 Alternatively use 'run-container' for a handy wrapper around the command above.
-
-NB: The base image is just that, a base image. It doesn't contain the
-experiments themselves but packages in the set of dependencies (via anaconda3)
-and build environment needed to run various Jupyter notebooks. It is publicly
-available at hub.docker.com/r/irfansharif/notebooks/, and can be used to have a
-Jupyter server operate off a locally "mounted" directory. $SRCDIR, locally, is
-where the Jupyter server will transparently read and write from.
-
-Usage:
-
-    $ docker run -it \
-        -p 8888:8888 \
-        --mount type=bind,source="$SRCDIR",target=/notebooks \
-        irfansharif/notebooks
-
-Eventually this will be repackaged into a separate base and src images with the
-notebooks present out of the box.
