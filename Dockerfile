@@ -1,8 +1,6 @@
 FROM continuumio/anaconda3
 LABEL maintainer = "Irfan Sharif <irfanmahmoudsharif@gmail.com>"
 
-COPY notebooks /notebooks
-
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
 # We copy over our wrapper script.
