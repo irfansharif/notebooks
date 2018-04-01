@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# Copyright 2018, Irfan Sharif.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+if [ ! -f scripts/push-container ]; then
+  echo 'ERR: push-container must be run from irfansharif/notebooks root (using scripts/push-container)' 1>&2
+  exit 1
+fi
+
+function print_usage() {
+  echo "scripts/push-container: Pushes the notebook container images to the docker registry (image with packaged notebooks only, by default)"
+  echo
+  echo "Usage: scripts/push-container [options]";
+  echo
+  echo "  Options:"
+  echo "    -h, --help   Show this screen."
+  echo "    -b, --base   Pushes the base container image."
+  echo "    --all        Pushes both container images."
+}
+
+# Default mode: we run the notebook container.
+MODE='notebook'
+
+while test $# -gt 0
+do
+    case "$1" in
+        --base|-b)
+              MODE='notebook-base'
+            ;;
+        --all)
+              MODE='all'
+            ;;
+        --help|-h)
+              MODE='help'
+            ;;
+        --*|-*|*)
+              MODE='incorrect-usage'
+            ;;
+    esac
+    shift
+done
+
+case "$MODE" in
+  notebook)
+      docker push irfansharif/notebooks
+      echo "INFO: Pushed irfansharif/notebooks"
+    ;;
+
+  notebook-base)
+      docker push irfansharif/notebooks-base
+      echo "INFO: Pushed irfansharif/notebooks-base"
+    ;;
+
+  all)
+      docker push irfansharif/notebooks-base
+      echo "INFO: Pushed irfansharif/notebooks-base"
+      echo
+
+      docker push irfansharif/notebooks
+      echo "INFO: Pushed irfansharif/notebooks"
+    ;;
+
+  help)
+      print_usage
+    ;;
+
+  incorrect-usage)
+      print_usage
+      exit 1
+    ;;
+esac

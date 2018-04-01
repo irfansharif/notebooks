@@ -1,8 +1,16 @@
+# We build this image atop of the anaconda distribution with python 3.6.
 FROM continuumio/anaconda3
 LABEL maintainer = "Irfan Sharif <irfanmahmoudsharif@gmail.com>"
 
-# NB: This image is to be mounted off a local directory, doing so will persist
-# the changes made to /notebooks via Jupyter on to the host filesystem.
+# Additionally install latest available version of tensorflow.
+RUN conda install --quiet --yes 'tensorflow=1.6' \
+    && conda clean -y \
+      --tarballs \
+      --index-cache \
+      --packages \
+      --source-cache
+
+RUN mkdir /notebooks
 
 # Jupyter has issues with being run directly:
 #   https://github.com/ipython/ipython/issues/7062
